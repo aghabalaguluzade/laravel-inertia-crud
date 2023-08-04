@@ -21,13 +21,6 @@
 
     <section class="p-6">
         <div class="max-w-3xl mx-auto">
-            <iframe src="https://player.simplecast.com/fd0bd2ba-c553-466c-a060-b144797ce369?dark=false"
-                    class="mb-6"
-                    width="100%"
-                    frameborder="no"
-                    scrolling="no"
-                    seamless
-                    title="W3Schools Free Online Web Tutorials"></iframe>
             <slot />
         </div>
     </section>

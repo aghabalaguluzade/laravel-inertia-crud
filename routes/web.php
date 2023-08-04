@@ -19,7 +19,10 @@ Route::get('/',function () {
 });
 Route::get('/users', function() {
     return Inertia::class::render('Users', [
-        'time' => now()->toTimeString()
+        'users' => \App\Models\User::paginate(10)->through(fn($user) => [
+            'id' => $user->id,
+            'name' => $user->name,
+        ])
     ]);
 });
 Route::get('/settings', fn() => Inertia::class::render('Settings'));
