@@ -1,7 +1,11 @@
 <template>
     <Head title="Users" />
 
-    <h1 class="text-4xl font-bold mb-5">Users</h1>
+    <div class="flex justify-between mb-6">
+        <h1 class="text-3xl">Users</h1>
+
+        <input type="text" class="border px-2 rounded-lg" placeholder="Search..." v-model="search" />
+    </div>
 
     <div class="flex flex-col">
         <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -39,6 +43,21 @@
 
 <script setup>
     import Pagination from "../Shared/Pagination.vue";
+    import {ref, watch} from "vue";
+    import { router } from '@inertiajs/vue3'
 
-    defineProps({ users : Array })
+
+    defineProps({
+        users : Object,
+        filters : Object
+    })
+
+    // let search = ref('');
+    let search = ref(props.filters.search);
+    watch(search,value => {
+        router.get('/users', { search : value }, {
+            preserveState : true,
+            replace : true
+        })
+    });
 </script>
