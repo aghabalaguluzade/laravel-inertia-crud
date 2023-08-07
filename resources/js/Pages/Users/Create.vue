@@ -9,43 +9,39 @@
         <div class="mb-6">
             <label for="name" class="block mb-2 uppercase font-bold text-xs text-gray-700">Name</label>
             <input type="text" name="name" id="name" class="border border-gray-400 p-2 w-full" v-model="form.name" />
-            <div v-if="errors.name" v-text="errors.name" class="text-red-500 text-xs mt-1"></div>
+            <div v-if="form.errors.name" v-text="form.errors.name" class="text-red-500 text-xs mt-1"></div>
         </div>
 
         <div class="mb-6">
             <label for="email" class="block mb-2 uppercase font-bold text-xs text-gray-700">Email</label>
             <input type="email" name="email" id="email" class="border border-gray-400 p-2 w-full" v-model="form.email" />
-            <div v-if="errors.email" v-text="errors.email" class="text-red-500 text-xs mt-1"></div>
+            <div v-if="form.errors.email" v-text="form.errors.email" class="text-red-500 text-xs mt-1"></div>
         </div>
 
         <div class="mb-6">
             <label for="password" class="block mb-2 uppercase font-bold text-xs text-gray-700">Password</label>
             <input type="password" name="password" id="password" class="border border-gray-400 p-2 w-full" v-model="form.password" />
-            <div v-if="errors.password" v-text="errors.password" class="text-red-500 text-xs mt-1"></div>
+            <div v-if="form.errors.password" v-text="form.errors.password" class="text-red-500 text-xs mt-1"></div>
         </div>
 
         <div class="mb-6">
-            <button type="submit" class="bg-blue-400 text-white rounded py-2 px-4 hover:bg-blue-500">Submit</button>
+            <button type="submit" class="bg-blue-400 text-white rounded py-2 px-4 hover:bg-blue-500" :disabled="form.processing">Submit</button>
         </div>
     </form>
 
 </template>
 
 <script setup>
-import {reactive, ref} from "vue";
-    import { router } from '@inertiajs/vue3'
+    import { useForm } from '@inertiajs/vue3'
+    import {watch} from "vue";
 
-    defineProps({
-        errors : Object
-    });
-
-    let form = reactive({
+    let form = useForm({
         name : "",
         email : "",
         password : ""
     });
 
     let submit = () => {
-        router.post("/users", form);
+        form.post("/users");
     };
 </script>
