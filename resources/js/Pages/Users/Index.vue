@@ -64,5 +64,6 @@
             preserveState : true,
             replace : true
         }, 300);
-    });
+    }));
+
 </script>

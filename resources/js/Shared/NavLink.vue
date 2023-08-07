@@ -13,7 +13,7 @@ export default {
     props : {
         active : {
             type : Boolean,
-            required : true
+            default : false
         }
     },
     components : {Link}
