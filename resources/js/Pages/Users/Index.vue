@@ -28,10 +28,13 @@
                                 </div>
                             </td>
 
-                            <td v-if="user.can.update" class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <Link :href="`/users/${user.id}/edit`" class="text-indigo-600 hover:text-indigo-900">
+                            <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
+                                <Link v-if="user.can.update" :href="`/users/${user.id}/edit`" class="text-indigo-600 hover:text-indigo-900">
                                     Edit
                                 </Link>
+                                <a v-if="user.can.delete" @click="destroy(user.id)" class="text-red-600 hover:text-red-900 cursor-pointer">
+                                    Delete
+                                </a>
                             </td>
                         </tr>
                         </tbody>
@@ -69,5 +72,11 @@
             replace : true
         }, 300);
     }));
+
+    const destroy = (id) => {
+        if (confirm("Are you sure?")) {
+            router.delete(`users/delete/${id}`)
+        };
+    };
 
 </script>

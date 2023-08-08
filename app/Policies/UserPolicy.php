@@ -45,7 +45,8 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        //
+        return $user->email === "aghabalaguluzade@gmail.com";
+//        return (bool) mt_rand(0, 1);
     }
 
     /**

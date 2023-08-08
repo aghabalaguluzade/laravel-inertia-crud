@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Request;
 use App\Models\User;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -29,43 +30,17 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Home');
     });
 
-    Route::get('/users', function() {
-        return Inertia::render('Users/Index', [
-            'users' => User::query()
-                ->when(Request::input('search'), fn($query, $search) => $query->where('name', 'like', '%' . $search . '%'))
-                ->whereNot('id',auth()->user()->id)
-                ->orderBy('id', 'desc')
-                ->paginate(10)
-                ->withQueryString()
-                ->through(fn($user) => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'can' => [
-                        'update' => auth()->user()->can('update', $user),
-                    ]
-                ]),
-            'filters' => Request::only(['search']),
-            'can' => [
-                'createUser' => auth()->user()->can('create', User::class)
-            ]
-        ]);
-    });
+    Route::get('/users', [UserController::class, 'index']);
 
-    Route::get('/users/create', function() {
-        return Inertia::render('Users/Create');
-    })->can('create','App\Models\User');
+    Route::get('/users/create', [UserController::class, 'create'])->can('create','App\Models\User');
 
-    Route::post('/users', function() {
-        $validated = Request::validate([
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+    Route::post('/users', [UserController::class, 'store'])->can('create','App\Models\User');;
 
-        User::create($validated);
+    Route::get('/users/edit/{id}', [UserController::class, 'edit'])->can('update','App\Models\User');
 
-        return redirect('/users');
-    });
+    Route::put('/users/update/{id}', [UserController::class, 'update'])->can('update','App\Models\User')->can('delete','App\Models\User');;
+
+    Route::delete('/users/delete/{id}', [UserController::class, 'destroy'])->can('delete','App\Models\User');;
 
     Route::get('/settings', fn() => Inertia::render('Settings'));
     Route::get('/logout', function () {});
