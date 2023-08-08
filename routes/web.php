@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,20 +33,27 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Users/Index', [
             'users' => User::query()
                 ->when(Request::input('search'), fn($query, $search) => $query->where('name', 'like', '%' . $search . '%'))
+                ->whereNot('id',auth()->user()->id)
                 ->orderBy('id', 'desc')
                 ->paginate(10)
                 ->withQueryString()
                 ->through(fn($user) => [
                     'id' => $user->id,
                     'name' => $user->name,
+                    'can' => [
+                        'update' => auth()->user()->can('update', $user),
+                    ]
                 ]),
-            'filters' => Request::only(['search'])
+            'filters' => Request::only(['search']),
+            'can' => [
+                'createUser' => auth()->user()->can('create', User::class)
+            ]
         ]);
     });
 
     Route::get('/users/create', function() {
         return Inertia::render('Users/Create');
-    });
+    })->can('create','App\Models\User');
 
     Route::post('/users', function() {
         $validated = Request::validate([
@@ -60,8 +68,6 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/settings', fn() => Inertia::render('Settings'));
-    Route::get('/logout', function () {
-        // Rest of the code...
-    });
+    Route::get('/logout', function () {});
 
 });
