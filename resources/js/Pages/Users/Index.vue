@@ -29,7 +29,7 @@
                             </td>
 
                             <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                <Link v-if="user.can.update" :href="`/users/${user.id}/edit`" class="text-indigo-600 hover:text-indigo-900">
+                                <Link v-if="user.can.update" :href="`/users/edit/${user.id}`" class="text-indigo-600 hover:text-indigo-900">
                                     Edit
                                 </Link>
                                 <a v-if="user.can.delete" @click="destroy(user.id)" class="text-red-600 hover:text-red-900 cursor-pointer">

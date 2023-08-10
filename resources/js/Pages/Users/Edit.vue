@@ -5,7 +5,7 @@
 
     <h1 class="text-3xl">Edit User</h1>
 
-    <form @submit.prevent="submit" class="max-w-md mx-auto mt mt-8">
+        <form @submit.prevent="update" class="max-w-md mx-auto mt mt-8">
         <div class="mb-6">
             <label for="name" class="block mb-2 uppercase font-bold text-xs text-gray-700">Name</label>
             <input type="text" name="name" id="name" class="border border-gray-400 p-2 w-full" v-model="form.name" />
@@ -19,22 +19,30 @@
         </div>
 
         <div class="mb-6">
-            <button type="submit" class="bg-blue-400 text-white rounded py-2 px-4 hover:bg-blue-500" :disabled="form.processing">Submit</button>
+            <button type="submit" class="bg-blue-400 text-white rounded py-2 px-4 hover:bg-blue-500" :disabled="form.processing">Update</button>
         </div>
     </form>
 
 </template>
 
 <script setup>
-import { useForm } from '@inertiajs/vue3'
-import {watch} from "vue";
+import {router, useForm} from '@inertiajs/vue3'
+    import { defineProps } from 'vue'
 
-let form = useForm({
-    name : "",
-    email : ""
-});
+    const props = defineProps({
+        user : {
+            type : Object,
+            default : () => ({})
+        }
+    });
 
-let submit = () => {
-    form.post("/users");
+    let form = useForm({
+        name: props.user.name,
+        email: props.user.email
+    });
+
+let update = () => {
+    form.put(`/users/update/${props.user.id}`);
 };
+
 </script>

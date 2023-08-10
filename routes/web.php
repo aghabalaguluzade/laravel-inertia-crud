@@ -30,19 +30,18 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Home');
     });
 
-    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users', [UserController::class, 'index'])->name('users');
 
     Route::get('/users/create', [UserController::class, 'create'])->can('create','App\Models\User');
 
     Route::post('/users', [UserController::class, 'store'])->can('create','App\Models\User');;
 
-    Route::get('/users/edit/{id}', [UserController::class, 'edit'])->can('update','App\Models\User');
+    Route::get('/users/edit/{user}', [UserController::class, 'edit'])->can('update','App\Models\User');
 
-    Route::put('/users/update/{id}', [UserController::class, 'update'])->can('update','App\Models\User')->can('delete','App\Models\User');;
+    Route::put('/users/update/{user}', [UserController::class, 'update'])->name('update');
 
-    Route::delete('/users/delete/{id}', [UserController::class, 'destroy'])->can('delete','App\Models\User');;
+    Route::delete('/users/delete/{user}', [UserController::class, 'destroy'])->can('delete','App\Models\User');;
 
-    Route::get('/settings', fn() => Inertia::render('Settings'));
     Route::get('/logout', function () {});
 
 });

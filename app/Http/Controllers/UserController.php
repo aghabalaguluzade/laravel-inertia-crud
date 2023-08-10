@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
     public function index(){
+        $search = request()->input('search');
+
         return Inertia::render('Users/Index', [
             'users' => User::query()
-                ->when(Request::input('search'), fn($query, $search) => $query->where('name', 'like', '%' . $search . '%'))
+                ->when($search, fn($query, $search) => $query->where('name', 'like', '%' . $search . '%'))
                 ->whereNot('id',auth()->user()->id)
                 ->orderBy('id', 'desc')
                 ->paginate(10)
@@ -23,7 +26,7 @@ class UserController extends Controller
                         'delete' => auth()->user()->can('delete', $user),
                     ]
                 ]),
-            'filters' => Request::only(['search']),
+            'filters' => request()->only(['search']),
             'can' => [
                 'createUser' => auth()->user()->can('create', User::class)
             ]
@@ -35,38 +38,36 @@ class UserController extends Controller
     }
 
     public function store(Request $request){
-        $validated = Request::validate([
+
+        $validated = $request->validate([
             'name' => 'required',
             'email' => 'required|email',
             'password' => 'required'
         ]);
 
         User::create($validated);
-
-        return redirect('/users');
     }
 
-    public function edit(User $user){
+    public function edit(User $user) {
+
         return Inertia::render('Users/Edit', [
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'can' => [
-                    'update' => auth()->user()->can('update', $user),
-                ],
-            ],
+            ]
         ]);
     }
 
     public function update(Request $request, User $user){
-        $validated = Request::validate([
+
+        $validated = $request->validate([
             'name' => 'required',
             'email' => 'required|email'
         ]);
 
         $user->update($validated);
-        return redirect('/users');
+        return to_route('users');
     }
 
     public function destroy(User $user){

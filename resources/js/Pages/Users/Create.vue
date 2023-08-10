@@ -32,8 +32,7 @@
 </template>
 
 <script setup>
-    import { useForm } from '@inertiajs/vue3'
-    import {watch} from "vue";
+import {useForm} from '@inertiajs/vue3'
 
     let form = useForm({
         name : "",
@@ -43,5 +42,6 @@
 
     let submit = () => {
         form.post("/users");
+        form.reset();
     };
 </script>
